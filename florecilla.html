@@ -427,6 +427,49 @@
     .flower-btn:active {
       transform: translateY(0);
     }
+  /* =========================
+   AJUSTES PARA MÓVIL
+========================= */
+
+@media (max-width: 600px) {
+
+  body {
+    min-height: 100dvh;
+  }
+
+  h1 {
+    top: 20px;
+    font-size: 22px;
+    padding: 0 15px;
+  }
+
+  .flower_wrapper {
+    bottom: 80px;
+  }
+
+  .flower_stem {
+    height: 300px;
+  }
+
+  .flower-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 14px 28px;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .flower-btn:hover {
+    transform: translateX(-50%);
+  }
+
+  .flower-btn:active {
+    transform: translateX(-50%);
+  }
+}
   </style>
 </head>
 
