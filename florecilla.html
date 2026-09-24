@@ -25,6 +25,14 @@
       --flower-center: radial-gradient(circle, #000, #ff5e00);
       --leaf-color: radial-gradient(circle, #82ff86, #104e1c);
       --petal-color: radial-gradient(circle, #ff5e00, #ffbb00);
+
+      /* ===== Medidas de la flor, en variables para poder escalarlas ===== */
+      --stem-height: 400px;
+      --center-size: 150px;
+      --petal-w: 70px;
+      --petal-h: 140px;
+      --leaf-w: 70px;
+      --leaf-h: 120px;
     }
 
     body {
@@ -62,7 +70,7 @@
 
     .flower_stem {
       width: 20px;
-      height: 400px;
+      height: var(--stem-height);
       background-image: var(--line-color);
       border-radius: 20px;
     }
@@ -71,11 +79,12 @@
 
     .flower_center {
       position: absolute;
-      top: -93px;
+      /* misma proporción que el original: -93px cuando el centro mide 150px */
+      top: calc(var(--center-size) * -0.62);
       left: 50%;
       transform: translateX(-50%) scale(0);
-      width: 150px;
-      height: 150px;
+      width: var(--center-size);
+      height: var(--center-size);
       border-radius: 50%;
       background: var(--flower-center);
       z-index: 5;
@@ -86,8 +95,8 @@
 
     .flower_petal {
       position: absolute;
-      width: 70px;
-      height: 140px;
+      width: var(--petal-w);
+      height: var(--petal-h);
       background: var(--petal-color);
       clip-path: ellipse(35% 50% at 50% 50%);
       top: -40%;
@@ -114,8 +123,8 @@
 
     .flower_leaf {
       position: absolute;
-      width: 70px;
-      height: 120px;
+      width: var(--leaf-w);
+      height: var(--leaf-h);
       background: var(--leaf-color);
       border-radius: 100px 20px 100px 20px;
       transform-origin: center bottom;
@@ -123,13 +132,15 @@
 
     .flower_leaf-1 {
       left: 60%;
-      bottom: 150px;
+      /* proporción original: 150px cuando el tallo mide 400px */
+      bottom: calc(var(--stem-height) * 0.375);
       transform: translateX(-45%) rotate(80deg);
     }
 
     .flower_leaf-2 {
       left: 60%;
-      bottom: 200px;
+      /* proporción original: 200px cuando el tallo mide 400px */
+      bottom: calc(var(--stem-height) * 0.5);
       transform: translateX(-55%) rotate(-80deg);
     }
 
@@ -229,7 +240,8 @@
     }
 
     .flower_light {
-      bottom: 450px;
+      /* proporción original: 450px cuando el tallo mide 400px */
+      bottom: calc(var(--stem-height) * 1.125);
       animation: light-ans 4s linear infinite backwards;
     }
 
@@ -304,6 +316,8 @@
 
     /* =========================
        LUCES DEL FONDO
+       (antes en px fijos: se salían de pantalla en móvil.
+        Ahora en % del ancho de la ventana, se reparten siempre bien)
     ========================= */
 
     .light {
@@ -312,65 +326,18 @@
       z-index: 1;
     }
 
-    .light-1 {
-      left: 100px;
-      animation-delay: 1s;
-    }
-
-    .light-2 {
-      left: 200px;
-      animation-delay: 0.5s;
-    }
-
-    .light-3 {
-      left: 600px;
-      animation-delay: 0.3s;
-    }
-
-    .light-4 {
-      left: 800px;
-      animation-delay: 0.9s;
-    }
-
-    .light-5 {
-      left: 450px;
-      animation-delay: 1.5s;
-    }
-
-    .light-6 {
-      left: 100px;
-      animation-delay: 3s;
-    }
-
-    .light-7 {
-      left: 900px;
-      animation-delay: 2s;
-    }
-
-    .light-8 {
-      left: 600px;
-      animation-delay: 3.5s;
-    }
-
-    .light-9 {
-      left: 700px;
-      animation-delay: 2s;
-    }
-
-    .light-10 {
-      left: 950px;
-      animation-delay: 3.5s;
-    }
-
-    .light-11 {
-      left: 750px;
-      animation-delay: 3s;
-    }
-
-    .light-12 {
-      left: 850px;
-      animation-delay: 0.5s;
-    }
+    .light-1  { left: 5%;  animation-delay: 1s;   }
+    .light-2  { left: 15%; animation-delay: 0.5s; }
+    .light-3  { left: 25%; animation-delay: 0.3s; }
+    .light-4  { left: 35%; animation-delay: 0.9s; }
+    .light-5  { left: 45%; animation-delay: 1.5s; }
+    .light-6  { left: 55%; animation-delay: 3s;   }
+    .light-7  { left: 65%; animation-delay: 2s;   }
+    .light-8  { left: 75%; animation-delay: 3.5s; }
+    .light-9  { left: 85%; animation-delay: 2s;   }
+    .light-10 { left: 92%; animation-delay: 3.5s; }
+    .light-11 { left: 10%; animation-delay: 3s;   }
+    .light-12 { left: 80%; animation-delay: 0.5s; }
 
     @keyframes light-ans-background {
       0% {
@@ -427,49 +394,90 @@
     .flower-btn:active {
       transform: translateY(0);
     }
-  /* =========================
-   AJUSTES PARA MÓVIL
-========================= */
 
-@media (max-width: 600px) {
+    /* =========================
+       AJUSTES PARA MÓVIL (xs)
+       Se reescalan las variables de la flor en vez de
+       tocar cada medida suelta, así todo escala junto
+       y no se descuadra.
+    ========================= */
 
-  body {
-    min-height: 100dvh;
-  }
+    @media (max-width: 600px) {
 
-  h1 {
-    top: 20px;
-    font-size: 22px;
-    padding: 0 15px;
-  }
+      :root {
+        --stem-height: 260px;
+        --center-size: 100px;
+        --petal-w: 46px;
+        --petal-h: 92px;
+        --leaf-w: 46px;
+        --leaf-h: 78px;
+      }
 
-  .flower_wrapper {
-    bottom: 80px;
-  }
+      body {
+        min-height: 100dvh;
+      }
 
-  .flower_stem {
-    height: 300px;
-  }
+      h1 {
+        top: 20px;
+        font-size: 22px;
+        padding: 0 15px;
+      }
 
-  .flower-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
-    padding: 14px 28px;
-    font-size: 16px;
-    white-space: nowrap;
-  }
+      .flower_wrapper {
+        bottom: 80px;
+      }
 
-  .flower-btn:hover {
-    transform: translateX(-50%);
-  }
+      .flower-btn {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        padding: 14px 28px;
+        font-size: 16px;
+        white-space: nowrap;
+      }
 
-  .flower-btn:active {
-    transform: translateX(-50%);
-  }
-}
+      .flower-btn:hover {
+        transform: translateX(-50%);
+      }
+
+      .flower-btn:active {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Pantallas muy estrechas (iPhone SE y similares) */
+    @media (max-width: 380px) {
+      :root {
+        --stem-height: 220px;
+        --center-size: 82px;
+        --petal-w: 38px;
+        --petal-h: 76px;
+        --leaf-w: 38px;
+        --leaf-h: 64px;
+      }
+    }
+
+    /* Móvil en horizontal: poca altura disponible */
+    @media (max-height: 480px) and (max-width: 900px) {
+      :root {
+        --stem-height: 160px;
+        --center-size: 64px;
+        --petal-w: 30px;
+        --petal-h: 60px;
+        --leaf-w: 30px;
+        --leaf-h: 50px;
+      }
+
+      .flower_wrapper {
+        bottom: 60px;
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 
