@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Me aburro</title>
+  <title>Me aburria</title>
 
   <style>
     * {
@@ -24,7 +24,8 @@
 
       --flower-center: radial-gradient(circle, #000, #ff5e00);
       --leaf-color: radial-gradient(circle, #82ff86, #104e1c);
-      --petal-color: radial-gradient(circle, #ff5e00, #ffbb00);
+      /* Pétalos azules */
+      --petal-color: radial-gradient(circle, #0033ff, #00a2ff);
 
       /* ===== Medidas de la flor, en variables para poder escalarlas ===== */
       --stem-height: 400px;
@@ -316,8 +317,7 @@
 
     /* =========================
        LUCES DEL FONDO
-       (antes en px fijos: se salían de pantalla en móvil.
-        Ahora en % del ancho de la ventana, se reparten siempre bien)
+       (en % del ancho de la ventana, se reparten siempre bien)
     ========================= */
 
     .light {
@@ -397,9 +397,6 @@
 
     /* =========================
        AJUSTES PARA MÓVIL (xs)
-       Se reescalan las variables de la flor en vez de
-       tocar cada medida suelta, así todo escala junto
-       y no se descuadra.
     ========================= */
 
     @media (max-width: 600px) {
@@ -490,7 +487,7 @@
     Tu navegador no puede reproducir este audio.
   </audio>
 
-  <h1>Pues la primera flor gordi</h1>
+  <h1>Pues la primera flor</h1>
 
   <div class="sunflower">
     <div class="flower_wrapper">
