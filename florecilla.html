@@ -6,34 +6,14 @@
   <title>Me aburria</title>
 
   <style>
-    * {
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-    }
+    * { padding: 0; margin: 0; box-sizing: border-box; }
 
     :root {
       --color-bg: linear-gradient(to top, #344d25, #101b0d);
+      --line-color: linear-gradient(to left top, #8bc34a 20%, #315b24, #1f451b);
 
-      --line-color: linear-gradient(
-        to left top,
-        #8bc34a 20%,
-        #315b24,
-        #1f451b
-      );
-
-      --flower-center: radial-gradient(circle, #241006 35%, #5a2d0c 72%, #8a4b13);
-      --leaf-color: radial-gradient(circle, #82ff86, #1f451b);
-      /* Pétalos amarillos de girasol */
-      --petal-color: radial-gradient(circle, #fff59d 5%, #ffca28 58%, #f59e0b 100%);
-
-      /* ===== Medidas de la flor, en variables para poder escalarlas ===== */
-      --stem-height: 400px;
-      --center-size: 150px;
-      --petal-w: 70px;
-      --petal-h: 140px;
-      --leaf-w: 70px;
-      --leaf-h: 120px;
+      /* Escala general: baja en móvil */
+      --u: 1;
     }
 
     body {
@@ -48,9 +28,9 @@
     h1 {
       position: absolute;
       top: 20px;
-      text-align: center;
       width: 100%;
-      color: #fff4c2;
+      text-align: center;
+      color: #ffe6f0;
       font-family: Arial, sans-serif;
       font-weight: 300;
       font-size: 28px;
@@ -58,310 +38,180 @@
     }
 
     /* =========================
-       FLOR
+       LIRIO
+       --h: altura del tallo, --s: tamaño, --x: desplazamiento, --tilt: inclinación
     ========================= */
 
     .flower_wrapper {
+      --k: calc(var(--u) * var(--s));
       position: absolute;
-      left: 50%;
+      left: calc(50% + var(--x) * var(--u));
       bottom: 20px;
-      transform: translateX(-50%);
-      z-index: 5;
+      width: calc(14px * var(--k));
+      transform: translateX(-50%) rotate(var(--tilt));
+      transform-origin: center bottom;
     }
 
     .flower_stem {
-      width: 20px;
-      height: var(--stem-height);
+      width: 100%;
+      height: calc(var(--h) * 1px * var(--k));
       background-image: var(--line-color);
       border-radius: 20px;
     }
 
-    /* Centro */
-
+    /* Garganta verde del lirio */
     .flower_center {
       position: absolute;
-      /* misma proporción que el original: -93px cuando el centro mide 150px */
-      top: calc(var(--center-size) * -0.62);
+      top: calc(-17px * var(--k));
       left: 50%;
-      transform: translateX(-50%) scale(0);
-      width: var(--center-size);
-      height: var(--center-size);
+      width: calc(34px * var(--k));
+      height: calc(34px * var(--k));
       border-radius: 50%;
-      background: var(--flower-center);
-      z-index: 5;
+      background: radial-gradient(circle, #f3ff9a 10%, #9ccc3a 60%, #4c7a1f);
+      transform: translateX(-50%) scale(0);
       opacity: 0;
+      z-index: 6;
     }
 
-    /* Pétalos */
-
+    /* Tépalos: 3 exteriores (anchos) y 3 interiores (algo más cortos) */
     .flower_petal {
       position: absolute;
-      width: var(--petal-w);
-      height: var(--petal-h);
-      background: var(--petal-color);
-      clip-path: ellipse(35% 50% at 50% 50%);
-      top: -40%;
+      width: calc(var(--pw) * var(--k));
+      height: calc(var(--ph) * var(--k));
+      top: calc(var(--ph) * var(--k) * -1);
       left: 50%;
       transform-origin: center bottom;
-      transform: translateX(-50%) translateY(50px) rotate(0deg);
+      transform: translateX(-50%) translateY(30px) rotate(0deg) scale(0.6);
       opacity: 0;
+      clip-path: polygon(50% 0%, 66% 18%, 82% 42%, 91% 62%, 78% 82%, 58% 100%, 42% 100%, 22% 82%, 9% 62%, 18% 42%, 34% 18%);
+      background:
+        radial-gradient(circle at 42% 54%, #a3194f 0 1.6px, transparent 2.6px),
+        radial-gradient(circle at 58% 46%, #a3194f 0 1.6px, transparent 2.6px),
+        radial-gradient(circle at 48% 68%, #a3194f 0 1.6px, transparent 2.6px),
+        radial-gradient(circle at 55% 32%, #a3194f 0 1.4px, transparent 2.4px),
+        radial-gradient(circle at 40% 38%, #a3194f 0 1.4px, transparent 2.4px),
+        linear-gradient(to right, transparent 46%, rgba(170, 40, 90, .38) 50%, transparent 54%),
+        linear-gradient(to top, #d9eb9a 0%, #fff8fb 22%, #ffd6e6 58%, #f06292 100%);
+    }
+    .flower_petal.out { --pw: 74px; --ph: 150px; z-index: 2; }
+    .flower_petal.in  { --pw: 64px; --ph: 134px; z-index: 3; }
+
+    /* Estambres y pistilo */
+    .flower_stamen {
+      --sl: 88;
+      position: absolute;
+      width: calc(2.5px * var(--k));
+      height: calc(var(--sl) * 1px * var(--k));
+      top: calc(var(--sl) * -1px * var(--k));
+      left: 50%;
+      background: linear-gradient(to top, #7cb342, #f1f8e9);
+      border-radius: 3px;
+      transform-origin: center bottom;
+      transform: translateX(-50%) translateY(30px) rotate(0deg) scale(0.6);
+      opacity: 0;
+      z-index: 7;
+    }
+    .flower_stamen::after {
+      content: "";
+      position: absolute;
+      top: calc(-8px * var(--k));
+      left: 50%;
+      width: calc(9px * var(--k));
+      height: calc(20px * var(--k));
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(ellipse, #ef6c00, #8d3a0c);
+    }
+    .flower_stamen.pistil { --sl: 104; width: calc(3.5px * var(--k)); }
+    .flower_stamen.pistil::after {
+      width: calc(10px * var(--k));
+      height: calc(10px * var(--k));
+      top: calc(-5px * var(--k));
+      background: #d4ec9a;
     }
 
-    .flower_petal-1 { --rotate-deg: 0deg; }
-    .flower_petal-2 { --rotate-deg: 30deg; }
-    .flower_petal-3 { --rotate-deg: 60deg; }
-    .flower_petal-4 { --rotate-deg: 90deg; }
-    .flower_petal-5 { --rotate-deg: 120deg; }
-    .flower_petal-6 { --rotate-deg: 150deg; }
-    .flower_petal-7 { --rotate-deg: 180deg; }
-    .flower_petal-8 { --rotate-deg: 210deg; }
-    .flower_petal-9 { --rotate-deg: 240deg; }
-    .flower_petal-10 { --rotate-deg: 270deg; }
-    .flower_petal-11 { --rotate-deg: 300deg; }
-    .flower_petal-12 { --rotate-deg: 330deg; }
-
-    /* Hojas */
-
+    /* Hojas largas y finas */
     .flower_leaf {
       position: absolute;
-      width: var(--leaf-w);
-      height: var(--leaf-h);
-      background: var(--leaf-color);
-      border-radius: 100px 20px 100px 20px;
+      left: 50%;
+      bottom: calc(var(--h) * var(--b) * 1px * var(--k));
+      width: calc(26px * var(--k));
+      height: calc(150px * var(--k));
+      background: linear-gradient(to right, #1f451b, #6fbf4a 50%, #1f451b);
+      border-radius: 50% 50% 50% 50% / 95% 95% 5% 5%;
       transform-origin: center bottom;
-    }
-
-    .flower_leaf-1 {
-      left: 60%;
-      /* proporción original: 150px cuando el tallo mide 400px */
-      bottom: calc(var(--stem-height) * 0.375);
-      transform: translateX(-45%) rotate(80deg);
-    }
-
-    .flower_leaf-2 {
-      left: 60%;
-      /* proporción original: 200px cuando el tallo mide 400px */
-      bottom: calc(var(--stem-height) * 0.5);
-      transform: translateX(-55%) rotate(-80deg);
+      transform: translateX(-50%) rotate(var(--r));
     }
 
     /* =========================
-       ANIMACIÓN ABRIR
+       ANIMACIONES
     ========================= */
 
-    @keyframes open-flower-petal {
-      0% {
-        transform: translateX(-50%) translateY(50px) rotate(0deg);
-        opacity: 0;
-      }
-
-      50% {
-        opacity: 1;
-      }
-
-      100% {
-        transform: translateX(-50%) translateY(0) rotate(var(--rotate-deg));
-        opacity: 1;
-      }
+    @keyframes open-bloom {
+      0%   { transform: translateX(-50%) translateY(30px) rotate(0deg) scale(0.6); opacity: 0; }
+      50%  { opacity: 1; }
+      100% { transform: translateX(-50%) translateY(0) rotate(var(--rotate-deg)) scale(1); opacity: 1; }
+    }
+    @keyframes close-bloom {
+      0%   { transform: translateX(-50%) translateY(0) rotate(var(--rotate-deg)) scale(1); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(30px) rotate(0deg) scale(0.6); opacity: 0; }
+    }
+    @keyframes open-center {
+      0%   { transform: translateX(-50%) scale(0); opacity: 0; }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+    @keyframes close-center {
+      0%   { transform: translateX(-50%) scale(1); opacity: 1; }
+      100% { transform: translateX(-50%) scale(0); opacity: 0; }
     }
 
-    @keyframes open-flower-center {
-      0% {
-        transform: translateX(-50%) scale(0);
-        opacity: 0;
-      }
+    .flower_wrapper.open .flower_center  { animation: open-center 1s ease-out forwards; animation-delay: var(--d); }
+    .flower_wrapper.open .flower_petal,
+    .flower_wrapper.open .flower_stamen  { animation: open-bloom 1.1s ease-out forwards; animation-delay: var(--d); }
 
-      100% {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-      }
-    }
+    .flower_wrapper.was-open:not(.open) .flower_center  { animation: close-center 0.7s ease-in forwards; }
+    .flower_wrapper.was-open:not(.open) .flower_petal,
+    .flower_wrapper.was-open:not(.open) .flower_stamen  { animation: close-bloom 0.7s ease-in forwards; }
 
     /* =========================
-       ANIMACIÓN CERRAR
+       LUCES
     ========================= */
 
-    @keyframes close-flower-petal {
-      0% {
-        transform: translateX(-50%) translateY(0) rotate(var(--rotate-deg));
-        opacity: 1;
-      }
-
-      100% {
-        transform: translateX(-50%) translateY(50px) rotate(0deg);
-        opacity: 0;
-      }
-    }
-
-    @keyframes close-flower-center {
-      0% {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-      }
-
-      100% {
-        transform: translateX(-50%) scale(0);
-        opacity: 0;
-      }
-    }
-
-    /* Flor abierta */
-
-    .flower_wrapper.open .flower_center {
-      animation: open-flower-center 1s ease-out forwards;
-    }
-
-    .flower_wrapper.open .flower_petal {
-      animation: open-flower-petal 1s ease-out forwards;
-    }
-
-    /* Flor cerrada */
-
-    .flower_wrapper:not(.open) .flower_center {
-      animation: close-flower-center 0.7s ease-in forwards;
-    }
-
-    .flower_wrapper:not(.open) .flower_petal {
-      animation: close-flower-petal 0.7s ease-in forwards;
-    }
-
-    /* =========================
-       LUCES DE LA FLOR
-    ========================= */
-
-    .flower_light,
-    .light {
+    .flower_light, .light {
       position: absolute;
       width: 10px;
       height: 10px;
-      background-color: rgb(255, 220, 90);
+      background-color: rgb(255, 225, 240);
       border-radius: 50%;
       filter: blur(2px);
       z-index: 1;
     }
 
-    .flower_light {
-      /* proporción original: 450px cuando el tallo mide 400px */
-      bottom: calc(var(--stem-height) * 1.125);
-      animation: light-ans 4s linear infinite backwards;
+    .lights {
+      position: absolute;
+      left: 50%;
+      bottom: calc(440px * var(--u) + 20px);
+      width: 0;
+      height: 0;
     }
-
-    .flower_light-1 {
-      left: 5%;
-      animation-delay: 1s;
-    }
-
-    .flower_light-2 {
-      left: 15%;
-      animation-delay: 0.5s;
-    }
-
-    .flower_light-3 {
-      left: 25%;
-      animation-delay: 0.3s;
-    }
-
-    .flower_light-4 {
-      left: 35%;
-      animation-delay: 0.9s;
-    }
-
-    .flower_light-5 {
-      left: 45%;
-      animation-delay: 1.5s;
-    }
-
-    .flower_light-6 {
-      left: 55%;
-      animation-delay: 3s;
-    }
-
-    .flower_light-7 {
-      left: 65%;
-      animation-delay: 2s;
-    }
-
-    .flower_light-8 {
-      left: 75%;
-      animation-delay: 3.5s;
-    }
+    .flower_light { animation: light-ans 4s linear infinite backwards; }
 
     @keyframes light-ans {
-      0% {
-        opacity: 0;
-        transform: translateY(0px);
-      }
-
-      25% {
-        opacity: 1;
-        transform: translateY(-50px) translateX(-20px);
-      }
-
-      50% {
-        opacity: 1;
-        transform: translateY(-150px) translateX(20px);
-        filter: blur(2px);
-      }
-
-      75% {
-        transform: translateY(-200px) translateX(-20px);
-        filter: blur(2px);
-      }
-
-      100% {
-        transform: translateY(-300px);
-        opacity: 0;
-        filter: blur(10px);
-      }
+      0%   { opacity: 0; transform: translateY(0); }
+      25%  { opacity: 1; transform: translateY(-50px) translateX(-20px); }
+      50%  { opacity: 1; transform: translateY(-150px) translateX(20px); }
+      75%  { transform: translateY(-200px) translateX(-20px); }
+      100% { transform: translateY(-300px); opacity: 0; filter: blur(10px); }
     }
 
-    /* =========================
-       LUCES DEL FONDO
-       (en % del ancho de la ventana, se reparten siempre bien)
-    ========================= */
-
-    .light {
-      bottom: 0;
-      animation: light-ans-background 7s linear infinite backwards;
-      z-index: 1;
-    }
-
-    .light-1  { left: 5%;  animation-delay: 1s;   }
-    .light-2  { left: 15%; animation-delay: 0.5s; }
-    .light-3  { left: 25%; animation-delay: 0.3s; }
-    .light-4  { left: 35%; animation-delay: 0.9s; }
-    .light-5  { left: 45%; animation-delay: 1.5s; }
-    .light-6  { left: 55%; animation-delay: 3s;   }
-    .light-7  { left: 65%; animation-delay: 2s;   }
-    .light-8  { left: 75%; animation-delay: 3.5s; }
-    .light-9  { left: 85%; animation-delay: 2s;   }
-    .light-10 { left: 92%; animation-delay: 3.5s; }
-    .light-11 { left: 10%; animation-delay: 3s;   }
-    .light-12 { left: 80%; animation-delay: 0.5s; }
+    .light { bottom: 0; animation: light-ans-background 7s linear infinite backwards; }
 
     @keyframes light-ans-background {
-      0% {
-        opacity: 0;
-        transform: translateY(0) translateX(0);
-      }
-
-      25% {
-        opacity: 1;
-        transform: translateY(-100px) translateX(10px);
-      }
-
-      50% {
-        transform: translateY(-200px) translateX(-10px);
-      }
-
-      75% {
-        transform: translateY(-400px) translateX(15px);
-      }
-
-      100% {
-        opacity: 0;
-        transform: translateY(-600px) translateX(-5px);
-      }
+      0%   { opacity: 0; transform: translateY(0) translateX(0); }
+      25%  { opacity: 1; transform: translateY(-100px) translateX(10px); }
+      50%  { transform: translateY(-200px) translateX(-10px); }
+      75%  { transform: translateY(-400px) translateX(15px); }
+      100% { opacity: 0; transform: translateY(-600px) translateX(-5px); }
     }
 
     /* =========================
@@ -373,206 +223,152 @@
       font-size: 18px;
       font-family: Arial, sans-serif;
       font-weight: 600;
-      color: #3b2608;
-      background: linear-gradient(45deg, #ffe082, #f9a825);
+      color: #4a0f2a;
+      background: linear-gradient(45deg, #ffd6e6, #f48fb1);
       border: none;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
       position: relative;
-      overflow: hidden;
       z-index: 999;
       margin: 40px 0;
     }
-
-    .flower-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .flower-btn:active {
-      transform: translateY(0);
-    }
+    .flower-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4); }
+    .flower-btn:active { transform: translateY(0); }
 
     /* =========================
-       AJUSTES PARA MÓVIL (xs)
+       MÓVIL
     ========================= */
 
     @media (max-width: 600px) {
-
-      :root {
-        --stem-height: 260px;
-        --center-size: 100px;
-        --petal-w: 46px;
-        --petal-h: 92px;
-        --leaf-w: 46px;
-        --leaf-h: 78px;
-      }
-
-      body {
-        min-height: 100dvh;
-      }
-
-      h1 {
-        top: 20px;
-        font-size: 22px;
-        padding: 0 15px;
-      }
-
-      .flower_wrapper {
-        bottom: 80px;
-      }
-
+      :root { --u: 0.62; }
+      body { min-height: 100dvh; }
+      h1 { font-size: 22px; padding: 0 15px; }
+      .flower_wrapper { bottom: 80px; }
+      .lights { bottom: calc(440px * var(--u) + 80px); }
       .flower-btn {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        margin: 0;
-        padding: 14px 28px;
-        font-size: 16px;
-        white-space: nowrap;
+        position: fixed; bottom: 20px; left: 50%;
+        transform: translateX(-50%); margin: 0;
+        padding: 14px 28px; font-size: 16px; white-space: nowrap;
       }
-
-      .flower-btn:hover {
-        transform: translateX(-50%);
-      }
-
-      .flower-btn:active {
-        transform: translateX(-50%);
-      }
+      .flower-btn:hover, .flower-btn:active { transform: translateX(-50%); }
     }
 
-    /* Pantallas muy estrechas (iPhone SE y similares) */
-    @media (max-width: 380px) {
-      :root {
-        --stem-height: 220px;
-        --center-size: 82px;
-        --petal-w: 38px;
-        --petal-h: 76px;
-        --leaf-w: 38px;
-        --leaf-h: 64px;
-      }
-    }
+    @media (max-width: 380px) { :root { --u: 0.5; } }
 
-    /* Móvil en horizontal: poca altura disponible */
     @media (max-height: 480px) and (max-width: 900px) {
-      :root {
-        --stem-height: 160px;
-        --center-size: 64px;
-        --petal-w: 30px;
-        --petal-h: 60px;
-        --leaf-w: 30px;
-        --leaf-h: 50px;
-      }
-
-      .flower_wrapper {
-        bottom: 60px;
-      }
-
-      h1 {
-        font-size: 18px;
-      }
+      :root { --u: 0.38; }
+      .flower_wrapper { bottom: 60px; }
+      .lights { bottom: calc(440px * var(--u) + 60px); }
+      h1 { font-size: 18px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- AUDIO -->
-  <!-- IMPORTANTE: autofotos.mp3 debe estar junto a este HTML -->
   <audio id="id_audio" preload="auto">
     <source src="./cancion.mp3" type="audio/mpeg">
-    alert("No se ha podido reproducir la canción. Comprueba que cancion.mp3 está en la misma carpeta que florecilla.html");
+    Tu navegador no puede reproducir audio.
   </audio>
 
-  <h1>Pues la primera flor</h1>
+  <h1>¿Una sonrisita?</h1>
 
-  <div class="sunflower">
+  <!-- Plantilla de un lirio (se clona 3 veces) -->
+  <template id="lily">
     <div class="flower_wrapper">
-
       <div class="flower_stem"></div>
+      <div class="flower_leaf" style="--b:.10; --r:62deg"></div>
+      <div class="flower_leaf" style="--b:.24; --r:-58deg"></div>
+      <div class="flower_leaf" style="--b:.40; --r:48deg"></div>
+      <div class="flower_leaf" style="--b:.54; --r:-45deg"></div>
 
       <div class="flower_center"></div>
 
-      <div class="flower_petal flower_petal-1"></div>
-      <div class="flower_petal flower_petal-2"></div>
-      <div class="flower_petal flower_petal-3"></div>
-      <div class="flower_petal flower_petal-4"></div>
-      <div class="flower_petal flower_petal-5"></div>
-      <div class="flower_petal flower_petal-6"></div>
-      <div class="flower_petal flower_petal-7"></div>
-      <div class="flower_petal flower_petal-8"></div>
-      <div class="flower_petal flower_petal-9"></div>
-      <div class="flower_petal flower_petal-10"></div>
-      <div class="flower_petal flower_petal-11"></div>
-      <div class="flower_petal flower_petal-12"></div>
+      <div class="flower_petal out" style="--rotate-deg:0deg"></div>
+      <div class="flower_petal out" style="--rotate-deg:120deg"></div>
+      <div class="flower_petal out" style="--rotate-deg:240deg"></div>
+      <div class="flower_petal in"  style="--rotate-deg:60deg"></div>
+      <div class="flower_petal in"  style="--rotate-deg:180deg"></div>
+      <div class="flower_petal in"  style="--rotate-deg:300deg"></div>
 
-      <div class="flower_leaf flower_leaf-1"></div>
-      <div class="flower_leaf flower_leaf-2"></div>
-
-      <div class="flower_light flower_light-1"></div>
-      <div class="flower_light flower_light-2"></div>
-      <div class="flower_light flower_light-3"></div>
-      <div class="flower_light flower_light-4"></div>
-      <div class="flower_light flower_light-5"></div>
-      <div class="flower_light flower_light-6"></div>
-      <div class="flower_light flower_light-7"></div>
-      <div class="flower_light flower_light-8"></div>
-
+      <div class="flower_stamen" style="--rotate-deg:20deg"></div>
+      <div class="flower_stamen" style="--rotate-deg:80deg"></div>
+      <div class="flower_stamen" style="--rotate-deg:140deg"></div>
+      <div class="flower_stamen" style="--rotate-deg:200deg"></div>
+      <div class="flower_stamen" style="--rotate-deg:260deg"></div>
+      <div class="flower_stamen" style="--rotate-deg:320deg"></div>
+      <div class="flower_stamen pistil" style="--rotate-deg:350deg"></div>
     </div>
-  </div>
+  </template>
 
-  <!-- Luces del fondo -->
+  <div class="lights"></div>
 
-  <div class="light light-1"></div>
-  <div class="light light-2"></div>
-  <div class="light light-3"></div>
-  <div class="light light-4"></div>
-  <div class="light light-5"></div>
-  <div class="light light-6"></div>
-  <div class="light light-7"></div>
-  <div class="light light-8"></div>
-  <div class="light light-9"></div>
-  <div class="light light-10"></div>
-  <div class="light light-11"></div>
-  <div class="light light-12"></div>
-
-  <!-- BOTÓN -->
-
-  <button class="flower-btn" type="button">
-    CLICK AQUÍ
-  </button>
+  <button class="flower-btn" type="button">CLICK AQUÍ</button>
 
   <script>
+    const tpl = document.getElementById("lily");
+    const lights = document.querySelector(".lights");
+
+    // Los dos laterales primero, para que el central quede delante
+    const lilies = [
+      { x: -230, s: 0.8, h: 300, tilt: "-7deg", d: "0.25s", z: 4 },
+      { x: 230,  s: 0.7, h: 250, tilt: "8deg",  d: "0.5s",  z: 4 },
+      { x: 0,    s: 1,   h: 400, tilt: "0deg",  d: "0s",    z: 5 }
+    ];
+
+    const flowers = lilies.map(c => {
+      const el = tpl.content.firstElementChild.cloneNode(true);
+      el.style.cssText =
+        `--x:${c.x}px; --s:${c.s}; --h:${c.h}; --tilt:${c.tilt}; --d:${c.d}; z-index:${c.z}`;
+      document.body.appendChild(el);
+      return el;
+    });
+
+    // Luces sobre el lirio central
+    [-120, -85, -50, -15, 15, 50, 85, 120].forEach((px, i) => {
+      const l = document.createElement("div");
+      l.className = "flower_light";
+      l.style.left = `calc(${px}px * var(--u))`;
+      l.style.animationDelay = [1, .5, .3, .9, 1.5, 3, 2, 3.5][i] + "s";
+      lights.appendChild(l);
+    });
+
+    // Luces del fondo
+    [[5,1],[15,.5],[25,.3],[35,.9],[45,1.5],[55,3],[65,2],[75,3.5],[85,2],[92,3.5],[10,3],[80,.5]]
+      .forEach(([left, delay]) => {
+        const l = document.createElement("div");
+        l.className = "light";
+        l.style.left = left + "%";
+        l.style.animationDelay = delay + "s";
+        document.body.appendChild(l);
+      });
+
     const flowerBtn = document.querySelector(".flower-btn");
     const audio = document.getElementById("id_audio");
-    const flower = document.querySelector(".flower_wrapper");
+    let isOpen = false;
 
     flowerBtn.addEventListener("click", async () => {
+      isOpen = !isOpen;
 
-      flower.classList.toggle("open");
+      flowers.forEach(f => {
+        f.classList.add("was-open");
+        f.classList.toggle("open", isOpen);
+      });
 
-      if (flower.classList.contains("open")) {
-
+      if (isOpen) {
         audio.volume = 0.2;
-
         try {
           await audio.play();
-          console.log("Audio reproduciéndose correctamente.");
         } catch (error) {
           console.error("No se ha podido reproducir el audio:", error);
-          alert("No se puede reproducir el audio. Comprueba que autofotos.mp3 está en la misma carpeta que el HTML.");
+          alert("No se puede reproducir el audio. Comprueba que cancion.mp3 está en la misma carpeta que el HTML.");
         }
-
         flowerBtn.textContent = "CERRAR FLOR";
-
       } else {
-
         audio.pause();
         audio.currentTime = 0;
-
         flowerBtn.textContent = "CLICK AQUÍ";
       }
     });
